@@ -15,7 +15,7 @@
 
 ### Dependencies
 
-No unusual packages are used in what is included here except for my own model evaluation module -- only pandas, scikit-learn, matplotlib, and seaborn. Ergo no conda requirements file.
+No packages outside of the Python standard library are used here except for my own model evaluation module -- only numpy, scikit-learn, matplotlib, and seaborn. Ergo no conda requirements file.
 
 ### Note
 
