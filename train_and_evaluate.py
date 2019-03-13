@@ -11,30 +11,32 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 
 def initialize_models():
-	"""
-	Initialize a dictionary with the model objects to be used
-	inputs
-		-
-	outputs
-		-
-	"""
+    """
+    Initialize a dictionary with the model objects to be used
+    inputs
+        -
+    outputs
+        model_dict - dict, {'model_name': model_object}
+    """
     
     linear_classifier = SGDClassifier(loss="modified_huber", penalty="l2", warm_start=True)
     random_forest_classifier = RandomForestClassifier(warm_start=True)
     
-    return {"random_forest": random_forest_classifier, 'linear_classifier': linear_classifier}
-	
+    model_dict = {"random_forest": random_forest_classifier, 'linear_classifier': linear_classifier}
+    
+    return model_dict
+    
 def fit_model(model, df, target = 'conversions'):
     """
-	Fit the model(s) to the observations
-	inputs
-		model - sklearn model object or dict with sklearn model objects as values
-		df - pd.DataFrame, training data
-		target - str, name of target feature
-	outputs
-		model - sklearn model object or dict with sklearn model objects as values fitted to the training data
-	"""
-	
+    Fit the model(s) to the observations
+    inputs
+        model - sklearn model object or dict with sklearn model objects as values
+        df - pd.DataFrame, training data
+        target - str, name of target feature
+    outputs
+        model - sklearn model object or dict with sklearn model objects as values fitted to the training data
+    """
+    
     print("Fitting the model to the observations...")
     # We only will predict on valid click events 
     df = df[df['valid_clicks'] == 1]
@@ -61,24 +63,24 @@ def fit_model(model, df, target = 'conversions'):
         model.fit(X, y)
     
     return model
-	
+    
 def make_test_predictions(model, df, target = 'conversions'):
     """
-	inputs
-		model - sklearn model object
-		df - pd.DataFrame, testing data
-		target - str, name of target
-	outputs
-		y - pd.Series, ground truth values
-		class_predictions - numpy 1-D array, class predictions (0, 1)
-		class_probability_estimates - numpy 1-D array, class probablity estimates
-	"""
-	
+    inputs
+        model - sklearn model object
+        df - pd.DataFrame, testing data
+        target - str, name of target
+    outputs
+        y - pd.Series, ground truth values
+        class_predictions - numpy 1-D array, class predictions 
+        class_probability_estimates - numpy 1-D array, class probablity estimates
+    """
+    
     X = df[[feature for feature in list(df) if '_rate_past' in feature]]
     y = df[target]
-	
-	class_predictions = model.predict(X)
-	class_probability_estimates = model.predict_proba(X)[:,1]
+    
+    class_predictions = model.predict(X)
+    class_probability_estimates = model.predict_proba(X)[:,1]
     
     return y, class_predictions, class_probability_estimates
 
@@ -87,7 +89,7 @@ def train_and_predict(processed_csv_filenames_list, days_to_train, days_to_predi
     Train the model on a given number of days, 
     predict on a hold out test set of the days following the training set,
     save the predictions and class probabilities to disk as a JSON for further evaluation
-	
+    
     inputs
         processed_csv_filenames_list - list, names of processed csv files
         days_to_train - int, number of days to train on
